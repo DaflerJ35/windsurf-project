@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body class="admin-dashboard">
+    <div class="admin-layout">
+        <nav class="admin-sidebar">
+            <div class="admin-brand">
+                <img src="assets/logo.png" alt="Logo">
+                <h1>Admin Panel</h1>
+            </div>
+            <ul class="admin-nav">
+                <li class="admin-nav-item active" data-view="overview">
+                    <i class="fas fa-home"></i>
+                    <span>Overview</span>
+                </li>
+                <li class="admin-nav-item" data-view="content">
+                    <i class="fas fa-photo-video"></i>
+                    <span>Content</span>
+                </li>
+                <li class="admin-nav-item" data-view="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </li>
+                <li class="admin-nav-item" data-view="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </li>
+                <li class="admin-nav-item" data-view="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-actions">
+                    <button class="notifications-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="admin-profile">
+                        <img src="assets/admin-avatar.jpg" alt="Admin">
+                        <span>Admin Name</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Overview View -->
+                <div id="overviewView" class="admin-view active">
+                    <h2 class="view-title" data-aos="fade-right">Dashboard Overview</h2>
+                    <div id="dashboardStats" class="stats-grid">
+                        <!-- Stats cards will be dynamically inserted here -->
+                    </div>
+                    <div class="charts-grid">
+                        <div class="chart-card" data-aos="fade-up">
+                            <h3>Revenue Trend</h3>
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <div class="chart-card" data-aos="fade-up" data-aos-delay="100">
+                            <h3>User Growth</h3>
+                            <canvas id="userGrowthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content View -->
+                <div id="contentView" class="admin-view">
+                    <h2 class="view-title">Content Management</h2>
+                    <div class="content-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="approved">Approved</button>
+                        <button class="filter-btn" data-filter="rejected">Rejected</button>
+                    </div>
+                    <div id="contentList" class="content-list">
+                        <!-- Content items will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Users View -->
+                <div id="usersView" class="admin-view">
+                    <h2 class="view-title">User Management</h2>
+                    <div class="user-filters">
+                        <button class="filter-btn active" data-filter="all">All Users</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="premium">Premium</button>
+                        <button class="filter-btn" data-filter="banned">Banned</button>
+                    </div>
+                    <div id="userList" class="user-list">
+                        <!-- User items will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Analytics View -->
+                <div id="analyticsView" class="admin-view">
+                    <h2 class="view-title">Analytics</h2>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h3>Traffic Sources</h3>
+                            <canvas id="trafficSourcesChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Content Performance</h3>
+                            <canvas id="contentPerformanceChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>User Engagement</h3>
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Conversion Rate</h3>
+                            <canvas id="conversionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="settingsView" class="admin-view">
+                    <h2 class="view-title">Settings</h2>
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3>General Settings</h3>
+                            <form id="generalSettingsForm">
+                                <div class="form-group">
+                                    <label>Site Name</label>
+                                    <input type="text" value="Your Site Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Contact Email</label>
+                                    <input type="email" value="admin@example.com">
+                                </div>
+                                <button type="submit">Save Changes</button>
+                            </form>
+                        </div>
+                        <div class="settings-card">
+                            <h3>Content Settings</h3>
+                            <form id="contentSettingsForm">
+                                <div class="form-group">
+                                    <label>Auto-approve Content</label>
+                                    <input type="checkbox">
+                                </div>
+                                <div class="form-group">
+                                    <label>Max File Size (MB)</label>
+                                    <input type="number" value="50">
+                                </div>
+                                <button type="submit">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import AdminDashboard from './js/admin-dashboard.js';
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+
+        // Handle navigation
+        document.querySelectorAll('.admin-nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // Handle notifications
+        const notificationsBtn = document.querySelector('.notifications-btn');
+        if (notificationsBtn) {
+            notificationsBtn.addEventListener('click', () => {
+                // Implementation for notifications panel
+            });
+        }
+
+        // Handle search
+        const searchInput = document.querySelector('.header-search input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                // Implementation for search functionality
+            });
+        }
+
+        // Handle settings forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Implementation for saving settings
+            });
+        });
+    </script>
+</body>
+</html>

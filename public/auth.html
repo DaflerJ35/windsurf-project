@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Your Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .auth-form input {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .auth-form button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #ff4081;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .auth-form button:hover {
+            background: #f50057;
+        }
+        .auth-toggle {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .auth-toggle a {
+            color: #ff4081;
+            text-decoration: none;
+        }
+        .auth-message {
+            text-align: center;
+            color: #ff4081;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form">
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit">Login</button>
+            <div class="auth-message" id="loginMessage"></div>
+            <div class="auth-toggle">
+                Don't have an account? <a href="#" id="showRegister">Register</a>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" style="display: none;">
+            <h2>Register</h2>
+            <input type="email" id="registerEmail" placeholder="Email" required>
+            <input type="password" id="registerPassword" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+            <div class="auth-message" id="registerMessage"></div>
+            <div class="auth-toggle">
+                Already have an account? <a href="#" id="showLogin">Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { registerUser, loginUser, logCustomEvent } from './js/firebase-config.js';
+        import { createUserProfile } from './js/firestore-operations.js';
+
+        // Form toggle functionality
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const showRegister = document.getElementById('showRegister');
+        const showLogin = document.getElementById('showLogin');
+
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'flex';
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'flex';
+        });
+
+        // Login functionality
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            try {
+                const user = await loginUser(email, password);
+                logCustomEvent('login_success', { method: 'email' });
+                messageDiv.style.display = 'block';
+                messageDiv.style.color = '#4CAF50';
+                messageDiv.textContent = 'Login successful! Redirecting...';
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 1500);
+            } catch (error) {
+                logCustomEvent('login_error', { error: error.code });
+                messageDiv.style.display = 'block';
+                messageDiv.style.color = '#f44336';
+                messageDiv.textContent = error.message;
+            }
+        });
+
+        // Register functionality
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('registerMessage');
+
+            if (password !== confirmPassword) {
+                messageDiv.style.display = 'block';
+                messageDiv.style.color = '#f44336';
+                messageDiv.textContent = 'Passwords do not match';
+                return;
+            }
+
+            try {
+                const user = await registerUser(email, password);
+                // Create user profile in Firestore
+                await createUserProfile(user.uid, {
+                    email: user.email,
+                    displayName: '',
+                    photoURL: '',
+                    role: 'user'
+                });
+                
+                logCustomEvent('registration_success', { method: 'email' });
+                messageDiv.style.display = 'block';
+                messageDiv.style.color = '#4CAF50';
+                messageDiv.textContent = 'Registration successful! Redirecting to login...';
+                setTimeout(() => {
+                    registerForm.style.display = 'none';
+                    loginForm.style.display = 'flex';
+                }, 1500);
+            } catch (error) {
+                logCustomEvent('registration_error', { error: error.code });
+                messageDiv.style.display = 'block';
+                messageDiv.style.color = '#f44336';
+                messageDiv.textContent = error.message;
+            }
+        });
+    </script>
+</body>
+</html>

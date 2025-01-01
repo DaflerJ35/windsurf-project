@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Content Gallery</title>
+    
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+
+    <!-- Three.js and Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/MotionPathPlugin.min.js"></script>
+    
+    <!-- Other Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.27/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/17.8.3/lazyload.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+</head>
+<body>
+    <!-- WebGL Background -->
+    <div class="webgl-background"></div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Loader -->
+    <div class="loader">
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <p class="loader-text" data-text="Loading amazing content...">Loading amazing content...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav glass-nav">
+        <div class="nav-brand magnetic-element">
+            <a href="index.html" class="logo-text gradient-text">MamiShay</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link magnetic-element">Home</a>
+            <a href="gallery.html" class="nav-link active magnetic-element">Gallery</a>
+            <a href="about.html" class="nav-link magnetic-element">About</a>
+            <a href="contact.html" class="nav-link magnetic-element">Contact</a>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-cta premium-btn magnetic-element">Join VIP</button>
+            <div class="theme-toggle magnetic-element">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" data-speed="0.1">
+        <div class="hero-content">
+            <h1 class="gradient-text parallax-element" data-speed="0.2">Premium Content Gallery</h1>
+            <p class="hero-subtitle parallax-element" data-speed="0.1">Exclusive photos and behind-the-scenes content</p>
+            <div class="hero-cta">
+                <button class="primary-btn magnetic-element">Explore Gallery</button>
+                <button class="secondary-btn magnetic-element">Learn More</button>
+            </div>
+        </div>
+        <div class="hero-stats">
+            <div class="stat-item parallax-element" data-speed="0.15">
+                <span class="stat-number" data-value="500">0</span>
+                <span class="stat-label">Premium Photos</span>
+            </div>
+            <div class="stat-item parallax-element" data-speed="0.2">
+                <span class="stat-number" data-value="10000">0</span>
+                <span class="stat-label">Happy Members</span>
+            </div>
+            <div class="stat-item parallax-element" data-speed="0.25">
+                <span class="stat-number">Daily</span>
+                <span class="stat-label">Updates</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <div class="arrows">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Filter -->
+    <div class="filter-section glass-morphism" data-aos="fade-up">
+        <div class="search-bar magnetic-element">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search gallery...">
+        </div>
+        <div class="filter-buttons">
+            <button class="filter-btn active magnetic-element" data-filter="all">
+                <i class="fas fa-border-all"></i>
+                All
+            </button>
+            <button class="filter-btn magnetic-element" data-filter="new">
+                <i class="fas fa-star"></i>
+                Latest
+            </button>
+            <button class="filter-btn magnetic-element" data-filter="popular">
+                <i class="fas fa-fire"></i>
+                Popular
+            </button>
+            <button class="filter-btn premium-filter magnetic-element" data-filter="premium">
+                <i class="fas fa-crown"></i>
+                Premium
+            </button>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="gallery-container">
+        <div class="gallery-grid masonry-grid">
+            <!-- Gallery items will be dynamically loaded -->
+        </div>
+        <div class="load-more-container">
+            <button class="load-more-btn magnetic-element">
+                <span>Load More</span>
+                <i class="fas fa-spinner fa-spin"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Premium Features -->
+    <section class="premium-features glass-morphism" data-aos="fade-up">
+        <h2 class="section-title gradient-text">Premium Membership Benefits</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card magnetic-element" data-aos="zoom-in">
+                <div class="benefit-icon"><i class="fas fa-photo-video"></i></div>
+                <h3>Exclusive Content</h3>
+                <p>Access premium photoshoots and behind-the-scenes content</p>
+            </div>
+            <div class="benefit-card magnetic-element" data-aos="zoom-in" data-aos-delay="100">
+                <div class="benefit-icon"><i class="fas fa-comments"></i></div>
+                <h3>Priority Chat</h3>
+                <p>Direct messaging and faster response times</p>
+            </div>
+            <div class="benefit-card magnetic-element" data-aos="zoom-in" data-aos-delay="200">
+                <div class="benefit-icon"><i class="fas fa-gift"></i></div>
+                <h3>Special Requests</h3>
+                <p>Custom content requests and personalized experiences</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Elements -->
+    <button class="fab-button magnetic-element" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <button id="chatButton" class="chat-toggle glass-button magnetic-element">
+            <i class="fas fa-comments"></i>
+        </button>
+        <div id="chatContainer" class="chat-container glass-morphism">
+            <div class="chat-header">
+                <h3>Live Chat</h3>
+                <button class="close-chat magnetic-element"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" placeholder="Type a message...">
+                <button class="send-message magnetic-element"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/effects.js"></script>
+    <script type="module" src="js/animations.js"></script>
+    <script src="js/main.js" defer></script>
+    <script src="js/gallery.js" defer></script>
+</body>
+</html>

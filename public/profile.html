@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .profile-image-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .image-upload-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .profile-sections {
+            display: grid;
+            gap: 20px;
+        }
+        .profile-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .social-links {
+            display: grid;
+            gap: 10px;
+        }
+        .save-button {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .save-button:hover {
+            background: #f50057;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-image-container">
+                <img id="profileImage" src="/images/default-avatar.png" alt="Profile" class="profile-image">
+                <div class="image-upload-overlay">
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="imageUpload" hidden accept="image/*">
+                </div>
+            </div>
+            <div>
+                <h1 id="profileName">Your Name</h1>
+                <p id="profileEmail">your.email@example.com</p>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <!-- Basic Information -->
+            <section class="profile-section">
+                <h2>Basic Information</h2>
+                <form id="basicInfoForm">
+                    <div class="form-group">
+                        <label for="displayName">Display Name</label>
+                        <input type="text" id="displayName" name="displayName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userBio">Bio</label>
+                        <textarea id="userBio" name="bio" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="save-button">Save Changes</button>
+                </form>
+            </section>
+
+            <!-- Social Links -->
+            <section class="profile-section">
+                <h2>Social Links</h2>
+                <form id="socialLinksForm">
+                    <div class="social-links">
+                        <div class="form-group">
+                            <label for="twitter">Twitter</label>
+                            <input type="url" id="twitter" name="twitter" class="social-link" data-platform="twitter">
+                        </div>
+                        <div class="form-group">
+                            <label for="instagram">Instagram</label>
+                            <input type="url" id="instagram" name="instagram" class="social-link" data-platform="instagram">
+                        </div>
+                        <div class="form-group">
+                            <label for="onlyfans">OnlyFans</label>
+                            <input type="url" id="onlyfans" name="onlyfans" class="social-link" data-platform="onlyfans">
+                        </div>
+                    </div>
+                    <button type="submit" class="save-button">Save Social Links</button>
+                </form>
+            </section>
+
+            <!-- Notification Preferences -->
+            <section class="profile-section">
+                <h2>Notification Preferences</h2>
+                <form id="notificationForm">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="emailNotifications" checked>
+                            Email Notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="messageNotifications" checked>
+                            Direct Message Notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="promotionalEmails">
+                            Promotional Emails
+                        </label>
+                    </div>
+                    <button type="submit" class="save-button">Save Preferences</button>
+                </form>
+            </section>
+
+            <!-- Privacy Settings -->
+            <section class="profile-section">
+                <h2>Privacy Settings</h2>
+                <form id="privacyForm">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="profileVisibility" checked>
+                            Public Profile
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="showOnlineStatus" checked>
+                            Show Online Status
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="allowMessages" checked>
+                            Allow Direct Messages
+                        </label>
+                    </div>
+                    <button type="submit" class="save-button">Save Privacy Settings</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import { UserProfileManager } from './js/user-profile.js';
+        
+        const profileManager = new UserProfileManager();
+
+        // Handle profile image upload
+        const imageUpload = document.getElementById('imageUpload');
+        const imageOverlay = document.querySelector('.image-upload-overlay');
+        
+        imageOverlay.addEventListener('click', () => imageUpload.click());
+        imageUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const downloadURL = await profileManager.uploadProfileImage(file);
+                    document.getElementById('profileImage').src = downloadURL;
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    alert('Failed to upload image. Please try again.');
+                }
+            }
+        });
+
+        // Handle form submissions
+        document.getElementById('basicInfoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                await profileManager.updateProfile(formData);
+                alert('Profile updated successfully!');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Failed to update profile. Please try again.');
+            }
+        });
+
+        document.getElementById('socialLinksForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                await profileManager.updateProfile(formData);
+                alert('Social links updated successfully!');
+            } catch (error) {
+                console.error('Error updating social links:', error);
+                alert('Failed to update social links. Please try again.');
+            }
+        });
+
+        document.getElementById('notificationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const preferences = {
+                email: e.target.emailNotifications.checked,
+                messages: e.target.messageNotifications.checked,
+                promotional: e.target.promotionalEmails.checked
+            };
+            try {
+                await profileManager.updateNotificationPreferences(preferences);
+                alert('Notification preferences updated successfully!');
+            } catch (error) {
+                console.error('Error updating notification preferences:', error);
+                alert('Failed to update notification preferences. Please try again.');
+            }
+        });
+
+        document.getElementById('privacyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const settings = {
+                isPublic: e.target.profileVisibility.checked,
+                showOnline: e.target.showOnlineStatus.checked,
+                allowMessages: e.target.allowMessages.checked
+            };
+            try {
+                await profileManager.updatePrivacySettings(settings);
+                alert('Privacy settings updated successfully!');
+            } catch (error) {
+                console.error('Error updating privacy settings:', error);
+                alert('Failed to update privacy settings. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

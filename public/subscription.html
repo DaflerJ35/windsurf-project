@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Subscriptions - Exclusive Content Access</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body class="subscription-page">
+    <div class="page-transition"></div>
+    
+    <header class="hero-section" data-aos="fade-down">
+        <div class="hero-content">
+            <h1 class="hero-title">Unlock Premium Access</h1>
+            <p class="hero-subtitle">Choose the perfect plan for your desires</p>
+            <div class="subscription-badges">
+                <span class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Secure Payment
+                </span>
+                <span class="badge">
+                    <i class="fas fa-clock"></i>
+                    Instant Access
+                </span>
+                <span class="badge">
+                    <i class="fas fa-undo"></i>
+                    7-Day Guarantee
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="subscription-container">
+        <div class="plans-grid" id="subscriptionPlans">
+            <!-- Plans will be dynamically inserted here -->
+        </div>
+
+        <section class="benefits-section" data-aos="fade-up">
+            <h2 class="section-title">Premium Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="benefit-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>Exclusive Content</h3>
+                    <p>Access our most intimate and exclusive content</p>
+                </div>
+                <div class="benefit-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="benefit-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>4K Streaming</h3>
+                    <p>Crystal clear quality that brings every detail to life</p>
+                </div>
+                <div class="benefit-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="benefit-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Priority Access</h3>
+                    <p>Be the first to experience new content releases</p>
+                </div>
+                <div class="benefit-card" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="benefit-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>VIP Support</h3>
+                    <p>24/7 dedicated support for all your needs</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials-section" data-aos="fade-up">
+            <h2 class="section-title">What Our Members Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card" data-aos="fade-right">
+                    <div class="testimonial-content">
+                        <p>"The premium content is absolutely worth it. The quality and exclusivity are unmatched!"</p>
+                        <div class="testimonial-author">
+                            <span class="author-name">Sarah M.</span>
+                            <span class="author-title">VIP Member</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card" data-aos="fade-left">
+                    <div class="testimonial-content">
+                        <p>"Best decision I've made. The exclusive content and early access are incredible."</p>
+                        <div class="testimonial-author">
+                            <span class="author-name">James R.</span>
+                            <span class="author-title">Premium Member</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section" data-aos="fade-up">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item" data-aos="fade-up">
+                    <div class="faq-question">
+                        <h3>How does billing work?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We offer flexible monthly and yearly billing options. Your subscription will automatically renew, and you can cancel anytime.</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-aos="fade-up">
+                    <div class="faq-question">
+                        <h3>Can I change plans later?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! You can upgrade or downgrade your plan at any time. The changes will be reflected in your next billing cycle.</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-aos="fade-up">
+                    <div class="faq-question">
+                        <h3>Is my payment secure?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! We use Stripe for payment processing, ensuring your payment information is always secure and encrypted.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { SubscriptionManager } from './js/subscription-manager.js';
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+
+        const subscriptionManager = new SubscriptionManager();
+        
+        // Handle subscription button clicks
+        document.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('subscribe-button')) {
+                const button = e.target;
+                const plan = button.dataset.plan;
+                
+                // Add loading state
+                button.disabled = true;
+                button.innerHTML = '<span class="loader"></span> Processing...';
+                
+                try {
+                    await subscriptionManager.handleSubscription(plan);
+                } catch (error) {
+                    console.error('Error processing subscription:', error);
+                    alert('Failed to process subscription. Please try again.');
+                    // Reset button state
+                    button.disabled = false;
+                    button.innerHTML = 'Subscribe Now';
+                }
+            }
+            
+            // Handle FAQ toggles
+            if (e.target.closest('.faq-question')) {
+                const faqItem = e.target.closest('.faq-item');
+                const answer = faqItem.querySelector('.faq-answer');
+                const toggle = faqItem.querySelector('.faq-toggle');
+                
+                faqItem.classList.toggle('active');
+                if (faqItem.classList.contains('active')) {
+                    toggle.textContent = '-';
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    toggle.textContent = '+';
+                    answer.style.maxHeight = null;
+                }
+            }
+        });
+
+        // Add parallax effect to hero section
+        document.addEventListener('mousemove', (e) => {
+            const hero = document.querySelector('.hero-section');
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            hero.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        // Check subscription status on page load
+        window.addEventListener('load', async () => {
+            const status = await subscriptionManager.getSubscriptionStatus();
+            if (status) {
+                const statusBadge = document.createElement('div');
+                statusBadge.className = `subscription-status status-${status}`;
+                statusBadge.textContent = `Current Plan: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+                document.querySelector('.hero-content').appendChild(statusBadge);
+            }
+        });
+    </script>
+</body>
+</html>

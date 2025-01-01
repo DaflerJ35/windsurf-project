@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Placeholders</title>
+</head>
+<body>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function generateImage(width, height, text) {
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(1, '#ff8e8e');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Add text
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, width/2, height/2);
+            
+            // Convert to data URL
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+        
+        // Generate sample images
+        const images = [
+            { name: 'sample1.jpg', width: 800, height: 1000, text: 'Sample 1' },
+            { name: 'sample2.jpg', width: 800, height: 600, text: 'Sample 2' },
+            { name: 'premium1.jpg', width: 800, height: 1000, text: 'Premium 1' },
+            { name: 'premium2.jpg', width: 800, height: 600, text: 'Premium 2' }
+        ];
+        
+        images.forEach(img => {
+            const link = document.createElement('a');
+            link.href = generateImage(img.width, img.height, img.text);
+            link.download = img.name;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        });
+    </script>
+</body>
+</html>

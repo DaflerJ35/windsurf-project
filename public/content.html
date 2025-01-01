@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .content-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .upload-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+        }
+        .upload-dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-dropzone:hover {
+            border-color: #ff4081;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .upload-dropzone i {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .content-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+        }
+        .content-thumbnail {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+        }
+        .content-thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .content-info {
+            padding: 15px;
+        }
+        .content-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+        .content-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .filter-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-button.active {
+            background: #ff4081;
+        }
+        .content-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .viewer-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .viewer-content video,
+        .viewer-content img {
+            max-width: 100%;
+            max-height: 80vh;
+        }
+        .content-details {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+        .upload-form {
+            margin-top: 20px;
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <section class="upload-section">
+            <h2>Upload Content</h2>
+            <div class="upload-dropzone" id="uploadDropzone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag and drop files here</h3>
+                <p>or click to select files</p>
+                <input type="file" id="fileUpload" hidden multiple accept="image/*,video/*">
+            </div>
+            <form id="uploadForm" class="upload-form">
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="photos">Photos</option>
+                        <option value="videos">Videos</option>
+                        <option value="exclusive">Exclusive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tags">Tags (comma separated)</label>
+                    <input type="text" id="tags" name="tags">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (0 for free)</label>
+                    <input type="number" id="price" name="price" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="isPublic" checked>
+                        Make this content public
+                    </label>
+                </div>
+                <button type="submit" class="subscribe-button">Upload Content</button>
+            </form>
+        </section>
+
+        <section class="content-section">
+            <div class="filters">
+                <button class="filter-button active" data-filter="all">All</button>
+                <button class="filter-button" data-filter="photos">Photos</button>
+                <button class="filter-button" data-filter="videos">Videos</button>
+                <button class="filter-button" data-filter="exclusive">Exclusive</button>
+            </div>
+
+            <div class="content-grid" id="contentGrid">
+                <!-- Content cards will be dynamically inserted here -->
+            </div>
+        </section>
+    </div>
+
+    <script type="module">
+        import { ContentManager } from './js/content-manager.js';
+        
+        const contentManager = new ContentManager();
+
+        // Handle file upload
+        const dropzone = document.getElementById('uploadDropzone');
+        const fileUpload = document.getElementById('fileUpload');
+        const uploadForm = document.getElementById('uploadForm');
+
+        dropzone.addEventListener('click', () => fileUpload.click());
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '#ff4081';
+        });
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            fileUpload.files = e.dataTransfer.files;
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileUpload.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                uploadForm.style.display = 'block';
+                // Preview files if needed
+            }
+        }
+
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const files = fileUpload.files;
+            const metadata = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                category: formData.get('category'),
+                tags: formData.get('tags').split(',').map(tag => tag.trim()),
+                price: parseFloat(formData.get('price')),
+                isPublic: formData.get('isPublic') === 'on'
+            };
+
+            try {
+                await contentManager.uploadContent(files, metadata);
+                alert('Content uploaded successfully!');
+                uploadForm.reset();
+                uploadForm.style.display = 'none';
+                contentManager.refreshContent();
+            } catch (error) {
+                console.error('Error uploading content:', error);
+                alert('Failed to upload content. Please try again.');
+            }
+        });
+
+        // Load initial content
+        contentManager.loadMoreContent();
+    </script>
+</body>
+</html>
